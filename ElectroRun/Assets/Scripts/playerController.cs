@@ -3,28 +3,57 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class playerController : MonoBehaviour {
-    public float speed;
-    public Rigidbody2D myRB;
-    Vector2 direction;
+    public float speed = 200f;
+    public float jumpSpeed = 10f;
+    private Rigidbody2D rb;
+    private Transform trans;
+    Vector2 movement;
+    public Transform end;
+    public Transform start;
+    bool isGrounded;
 
-	// Use this for initialization
 	void Start () {
-        myRB = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
+        trans = GetComponent<Transform>();
 	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-        /*
-        if (Input.GetKey(KeyCode.RightArrow))
+
+    void FixedUpdate () {
+        float horizontalAxisValue = Input.GetAxis("Horizontal");
+        float verticalAxisValue = Input.GetAxis("Vertical");
+
+        if (horizontalAxisValue > 0)
         {
-            direction = new Vector2(1, 0);
-            myRB.AddForce(direction * speed);
+            if (rb.velocity.x < 10.0)
+            {
+                rb.AddForce(Vector2.right * speed);
+            }
         }
-        if (Input.GetKey(KeyCode.UpArrow))
+
+        if (horizontalAxisValue < 0)
         {
-            direction = new Vector2(0, 20);
-            myRB.AddForce(direction * speed);
+            if (rb.velocity.x > -10.0)
+            {
+                rb.AddForce(Vector2.left * speed);
+            }
         }
-        */
+
+        if (verticalAxisValue > 0)
+        {
+            Debug.DrawLine(start.position, end.position);
+            isGrounded = Physics2D.Linecast(start.position, end.position);
+            if (isGrounded == true)
+            {
+                rb.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+            }
+        }
+    }  
+    
+/*
+    void fixedUpdate() {
+        if (true)
+        {
+
+        }
     }
+    */
 }
